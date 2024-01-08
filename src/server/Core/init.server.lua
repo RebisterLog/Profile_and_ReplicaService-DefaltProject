@@ -8,10 +8,10 @@ local SETTINGS = {
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicaService = require(ServerScriptService.Server.Modules.ReplicaService)
 local ProfileService = require(ServerScriptService.Server.Modules.ProfileService)
+local PlayerProfile = require(ServerScriptService.Server.Modules.PlayerProfile)
 
 ----- Private Variables -----
 
-local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
 local PlayerProfileClassToken = ReplicaService.NewClassToken("PlayerProfile")
@@ -20,11 +20,6 @@ local GameProfileStore = ProfileService.GetProfileStore(
 	"Main",
 	SETTINGS.ProfileTemplate
 )
-
-local PlayerProfile -- PlayerProfile object
-local PlayerProfiles = {} -- [player] = {Profile = profile, Replica = replica}
-
-local LastPayout = os.clock()
 
 ----- Private functions -----
 
@@ -36,11 +31,15 @@ local function PlayerAdded(player)
     if profile ~= nil then
 		profile:AddUserId(player.UserId)
         profile:Reconcile()
+
+		local playerProfile = PlayerProfile:Get(player)
+
 		profile:ListenToRelease(function()
-			PlayerProfiles[player].Replica:Destroy()
-            PlayerProfiles[player] = nil
+			playerProfile.Replica:Destroy()
+            PlayerProfile:Remove(player)
             player:Kick()
         end)
+		
 		if player:IsDescendantOf(Players) == true then
 			local player_profile = {
 				Profile = profile,
@@ -50,37 +49,16 @@ local function PlayerAdded(player)
 					Data = profile.Data,
 					Replication = "All",
 				}),
-				_player = player,
+				Instance = player,
 			}
 			setmetatable(player_profile, PlayerProfile)
-            PlayerProfiles[player] = player_profile
+            playerProfile = player_profile
         else
             profile:Release()
         end
     else
         player:Kick() 
     end
-end
-
------ Public functions -----
-
--- PlayerProfile object:
-PlayerProfile = {
-	--[[
-		_player = player,
-	--]]
-}
-PlayerProfile.__index = PlayerProfile
-
-function PlayerProfile:GiveCash(cash_amount)
-	if self:IsActive() == false then
-		return
-	end
-	self.Replica:SetValue({"Cash"}, self.Replica.Data.Cash + cash_amount)
-end
-
-function PlayerProfile:IsActive() --> is_active
-	return PlayerProfiles[self._player] ~= nil
 end
 
 ----- Initialize -----
@@ -92,8 +70,8 @@ end
 Players.PlayerAdded:Connect(PlayerAdded)
 
 Players.PlayerRemoving:Connect(function(player)
-    local player_profile = PlayerProfiles[player]
-    if player_profile ~= nil then
-        player_profile.Profile:Release()
+    local playerProfile = PlayerProfile:Get(player)
+    if playerProfile ~= nil then
+        playerProfile.Profile:Release()
     end
 end)
