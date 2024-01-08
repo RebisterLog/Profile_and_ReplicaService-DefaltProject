@@ -23,10 +23,10 @@ end
 
 local CharacterComponents = {}
 
-local CharacterComponent = {}
+local CharacterComponent: Types.ICharacterComponent = {}
 CharacterComponent.__index = CharacterComponent
 
-function CharacterComponent.Init(self: Types.ICharacterComponent)
+function CharacterComponent:Init()
     self.Player = Players:GetPlayerFromCharacter(self.Instance)
     self.Maid = Maid.NewMaid()
 
@@ -42,7 +42,7 @@ function CharacterComponent.Init(self: Types.ICharacterComponent)
     --print("Inited character component for "..self.Player.Name)
 end
 
-function CharacterComponent.Destroy(self: Types.ICharacterComponent)
+function CharacterComponent:Destroy()
     CharacterComponents[self.Instance] = nil
     self.Maid:Cleanup()
 end

@@ -7,11 +7,11 @@ local Types = require(ServerScriptService.Server.Types)
 
 local PlayerProfiles = {}
 
-PlayerProfile = {}
+local PlayerProfile: Types.IPlayerProfile = {}
 PlayerProfile.__index = PlayerProfile
 
 
-function PlayerProfile.Init(self: Types.IPlayerProfile)
+function PlayerProfile:Init()
 	self.Maid = Maid.NewMaid()
 	self.CharacterComponent = nil
 
@@ -26,20 +26,20 @@ function PlayerProfile.Init(self: Types.IPlayerProfile)
 	end
 end
 
-function PlayerProfile.GiveCash(self: Types.IPlayerProfile, cash_amount: number)
+function PlayerProfile:GiveCash(cash_amount: number)
 	if self:IsActive() == false then return end
 	self.Replica:SetValue({"Cash"}, self.Replica.Data.Cash + cash_amount)
 end
 
-function PlayerProfile.IsActive(self: Types.IPlayerProfile): boolean
+function PlayerProfile:IsActive(): boolean
 	return PlayerProfiles[self.Instance] ~= nil
 end
 
-function PlayerProfile.Get(self: Types.IPlayerProfile, player: Player): Types.IPlayerProfile
+function PlayerProfile:Get(player: Player): Types.IPlayerProfile
     return PlayerProfiles[player]
 end
 
-function PlayerProfile.Remove(self: Types.IPlayerProfile, player: Player)
+function PlayerProfile:Remove(player: Player)
     PlayerProfiles[player] = nil
 end
 
