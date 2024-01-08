@@ -53,6 +53,7 @@ local function PlayerAdded(player)
 			}
 			setmetatable(player_profile, PlayerProfile)
             playerProfile = player_profile
+            playerProfile:Init()
         else
             profile:Release()
         end

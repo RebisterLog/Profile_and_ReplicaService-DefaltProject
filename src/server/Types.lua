@@ -73,15 +73,31 @@ export type IReplica = {
     Destroy: (self: IReplica) -> nil,
 }
 
+export type IMaid = {
+    AddCleanupTask: (task: any) -> (...any) -> nil;
+    RemoveCleanupTask: (task: any) -> nil;
+    CleanupOfOne: (task: any, ...any) -> nil;
+    Cleanup: (...any) -> nil;
+}
+
 export type IPlayerProfile = {
     Profile: IProfile,
     Replica: IReplica,
     Instance: Player,
+    Maid: IMaid,
 
     IsActive: (self: IPlayerProfile) -> boolean,
     Get: (self: IPlayerProfile, player: Player) -> IPlayerProfile,
     Remove: (self: IPlayerProfile, player: Player) -> nil,
 }
 
+export type ICharacterComponent = {
+    Instance: Model,
+    Player: Player?,
+    Maid: IMaid,
+
+    Init: (self: ICharacterComponent, character: Model) -> nil,
+    Destroy: (self: ICharacterComponent) -> nil,
+}
 
 return nil
