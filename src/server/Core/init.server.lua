@@ -22,7 +22,7 @@ local GameProfileStore = ProfileService.GetProfileStore(
 )
 
 local PlayerProfile -- PlayerProfile object
-local PlayerProfiles: {[Player]: {Profile: Profile, Replica: replica}} = {} -- [player] = {Profile = profile, Replica = replica}
+local PlayerProfiles = {} -- [player] = {Profile = profile, Replica = replica}
 
 local LastPayout = os.clock()
 
