@@ -25,9 +25,9 @@ export type IProfile = {
     IsActive: () -> boolean,
     GetMetaTag: (tag_name: string) -> any,
     Reconcile: () -> nil,
-    ListenToRelease: (listener: (place_id: number | nil, game_job_id: number | nil) -> nil) -> ScriptConnection,
+    ListenToRelease: (listener: (place_id: number | nil, game_job_id: number | nil) -> nil) -> RBXScriptConnection,
     Release: () -> nil,
-    ListenToHopReady: (listener: () -> nil) -> (),
+    ListenToHopReady: (listener: () -> nil) -> RBXScriptConnection,
     AddUserId: (user_id: number) -> nil,
     RemoveUserId: (user_id: number) -> nil,
     Identify: () -> string,
@@ -80,7 +80,7 @@ export type IPlayerProfile = {
 
     IsActive: (self: IPlayerProfile) -> boolean,
     Get: (self: IPlayerProfile, player: Player) -> IPlayerProfile,
-    Remove: (self: IPlayerProfile, player: Player) -> (),
+    Remove: (self: IPlayerProfile, player: Player) -> nil,
 }
 
 
