@@ -31,13 +31,19 @@ function CharacterComponent:Init()
     self.Maid = Maid.NewMaid()
 
     local humanoid = self.Instance:FindFirstChildOfClass("Humanoid")
-    humanoid.Died:Connect(function()
-        self:Destroy()
-    end)
+    self.Maid:AddCleanupTask(task.spawn(
+        humanoid.Died:Connect(function()
+            self:Destroy()
+        end)
+    ))
+    
 
-    self.Instance.Destroying:Connect(function()
-        self:Destroy()
-    end)
+    self.Maid:AddCleanupTask(task.spawn(
+        self.Instance.Destroying:Connect(function()
+            self:Destroy()
+        end)
+    ))
+    
 
     --print("Inited character component for "..self.Player.Name)
 end
