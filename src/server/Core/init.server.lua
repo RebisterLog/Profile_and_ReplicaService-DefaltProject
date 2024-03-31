@@ -1,14 +1,18 @@
-local SETTINGS = {
-	ProfileTemplate = {
-		Cash = 0,
-	}
+local ProfileTemplate = {
+    Spawnpoints = {
+        "Tutorial End"
+    },
 }
+
+local DynamicTemplate = {}
+
 
 ----- Loaded Modules -----
 local ServerScriptService = game:GetService("ServerScriptService")
 local ReplicaService = require(ServerScriptService.Server.Modules.ReplicaService)
 local ProfileService = require(ServerScriptService.Server.Modules.ProfileService)
 local PlayerProfile = require(ServerScriptService.Server.Modules.PlayerProfile)
+local CharacterComponent = require(ServerScriptService.Server.Modules.CharacterComponent)
 
 ----- Private Variables -----
 
@@ -16,10 +20,7 @@ local Players = game:GetService("Players")
 
 local PlayerProfileClassToken = ReplicaService.NewClassToken("PlayerProfile")
 
-local GameProfileStore = ProfileService.GetProfileStore(
-	"Main",
-	SETTINGS.ProfileTemplate
-)
+local GameProfileStore = ProfileService.GetProfileStore("Main", ProfileTemplate)
 
 ----- Private functions -----
 

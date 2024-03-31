@@ -1,5 +1,6 @@
+
 export type IProfile = {
-    Data: table,
+    Data: {any},
     MetaData: {
         ProfileCreateTime: number,
         SessionLoadCount: number,
@@ -15,7 +16,7 @@ export type IProfile = {
         },
     },
     MetaTagsUpdated: RBXScriptSignal,
-    RobloxMetaData: table,
+    RobloxMetaData: {any},
     UserIds: {
         [number]: number,
     },
@@ -37,16 +38,22 @@ export type IProfile = {
     OverwriteAsync: () -> nil,
 }
 
+export type IProfileTemplate = {
+    Spawnpoints: {string},
+}
+
+export type IDynamicTemplate = {}
+
 export type IReplica = {
-    Data: table,
+    Data: IReplicaData,
     Id: number,
     Class: string,
-    Tags: table,
+    Tags: {any},
     Parent: IReplica,
-    Children: table,
+    Children: {any},
     
-    SetValue: (self: IReplica, path: string, value: any) -> nil,
-    SetValues: (self: IReplica, path: string, values: table) -> nil,
+    SetValue: (self: IReplica, path: {string} | string, value: any) -> nil,
+    SetValues: (self: IReplica, path: {string} | string, values: {any}) -> nil,
     
     ArrayInsert: (self: IReplica, path: string, value: any) -> number,
     ArraySet: (self: IReplica, path: string, index: number, value: any) -> nil,
@@ -74,10 +81,58 @@ export type IReplica = {
 }
 
 export type IMaid = {
-    AddCleanupTask: (task: any) -> (...any) -> nil;
-    RemoveCleanupTask: (task: any) -> nil;
-    CleanupOfOne: (task: any, ...any) -> nil;
-    Cleanup: (...any) -> nil;
+    GiveTask: (self: IMaid, task: any) -> (...any) -> nil;
+    GivePromise: (self: IMaid, task: any) -> (...any) -> nil;
+    DoCleaning: (self: IMaid) -> nil;
+}
+
+export type IReplicaData = IProfileTemplate & IDynamicTemplate
+
+export type Event <args...> = {
+    Connect: (self: Event<args...>, func: (args...) -> ...any) -> nil,
+    Disconnect: (self: Event<args...>, func: (args...) -> ...any) -> nil,
+    Destroy: (self: Event<args...>) -> nil,
+    Wait: (self: Event<args...>, timeout: number?) -> nil,
+    Once: (self: Event<args...>, func: (args...) -> ...any) -> nil,
+    Single: (self: Event<args...>, func: (args...) -> ...any) -> nil,
+    Fire: (self: Event<args...>, ...any) -> nil,
+}
+
+export type Remote = {
+	Connect: (self: Remote, func: (...any) -> ...any) -> nil,
+	Disconnent: (self: Remote, func: (...any) -> ...any) -> nil,
+	Destroy: (self: Remote) -> nil,
+	Wait: (self: Remote, timeout: number?) -> nil,
+	Once: (self: Remote, func: (...any) -> ...any) -> nil,
+	Single: (self: Remote, func: (...any) -> ...any) -> nil,
+	
+	FireAllClients: (self: Remote, ...any) -> nil,
+	FireClient: (self: Remote, client: Player, ...any) -> nil,
+	FireServer: (self: Remote, ...any) -> nil,
+	FireClientsInRadius: (self: Remote, origin: Vector3, radius: number, ...any) -> nil,
+}
+
+export type Unreliable = {
+	Connect: (self: Unreliable, func: (...any) -> ...any) -> nil,
+	Disconnent: (self: Unreliable, func: (...any) -> ...any) -> nil,
+	Destroy: (self: Unreliable) -> nil,
+	Wait: (self: Unreliable, timeout: number?) -> nil,
+	Once: (self: Unreliable, func: (...any) -> ...any) -> nil,
+	Single: (self: Unreliable, func: (...any) -> ...any) -> nil,
+
+	FireAllClients: (self: Unreliable, ...any) -> nil,
+	FireClient: (self: Unreliable, client: Player, ...any) -> nil,
+	FireServer: (self: Unreliable, ...any) -> nil,
+	FireClientsInRadius: (self: Unreliable, origin: Vector3, radius: number, ...any) -> nil,
+}
+
+export type ICharacterComponent = {
+    Instance: Model,
+    Player: Player?,
+    Maid: IMaid,
+
+    Init: (self: ICharacterComponent, character: Model) -> nil,
+    Destroy: (self: ICharacterComponent) -> nil,
 }
 
 export type IPlayerProfile = {
@@ -89,15 +144,6 @@ export type IPlayerProfile = {
     IsActive: (self: IPlayerProfile) -> boolean,
     Get: (self: IPlayerProfile, player: Player) -> IPlayerProfile,
     Remove: (self: IPlayerProfile, player: Player) -> nil,
-}
-
-export type ICharacterComponent = {
-    Instance: Model,
-    Player: Player?,
-    Maid: IMaid,
-
-    Init: (self: ICharacterComponent, character: Model) -> nil,
-    Destroy: (self: ICharacterComponent) -> nil,
 }
 
 return nil

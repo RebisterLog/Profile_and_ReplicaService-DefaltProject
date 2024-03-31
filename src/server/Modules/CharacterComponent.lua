@@ -23,13 +23,17 @@ end
 
 local CharacterComponents = {}
 
-local CharacterComponent: Types.ICharacterComponent = {}
-CharacterComponent.__index = CharacterComponent
+local function CreateCharacterComponent()
+    local component = {}
+    component.__index = component
+    return component
+end
+
+local CharacterComponent: Types.ICharacterComponent = CreateCharacterComponent()
+
 
 function CharacterComponent:Init()
     self.Player = Players:GetPlayerFromCharacter(self.Instance)
-    self.Maid = Maid.NewMaid()
-
     local humanoid = self.Instance:FindFirstChildOfClass("Humanoid")
 
     self.Maid:AddCleanupTask(humanoid.Died:Connect(function()
@@ -50,11 +54,13 @@ end
 
 local CharacterComponentConstructor = {}
 
-function CharacterComponentConstructor.new(character: Model): Types.ICharacterComponent | nil
+function CharacterComponentConstructor.new(character: Model, playerProfile: Types.IPlayerProfile?)
     if not CheckBodyPartsInCharacter(character) then return end
 
     local component = {
         Instance = character,
+        PlayerProfile = playerProfile,
+        Maid = Maid.new(),
     }
 
     setmetatable(component, CharacterComponent)

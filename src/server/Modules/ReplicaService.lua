@@ -127,10 +127,6 @@
 		
 --]]
 
-local SETTINGS = {
-
-}
-
 local Madwork -- Standalone Madwork reference for portable version of ReplicaService/ReplicaController
 do
 	local RunService = game:GetService("RunService")
@@ -376,7 +372,7 @@ local function DestroyReplicaAndDescendantsRecursive(replica, not_first_in_stack
 	-- Clear replica entry:
 	Replicas[id] = nil
 	-- Cleanup:
-	replica._maid:Cleanup()
+	replica._maid:DoCleaning()
 	-- Remove _creation_data entry:
 	replica._creation_data[tostring(id)] = nil
 	-- Clear from children table of top parent replica:
@@ -786,11 +782,12 @@ function Replica:IsActive() --> is_active [bool]
 end
 
 function Replica:AddCleanupTask(task)
-	return self._maid:AddCleanupTask(task)
+	return self._maid:GiveTask(task)
 end
 
 function Replica:RemoveCleanupTask(task)
-	self._maid:RemoveCleanupTask(task)
+	--local maid = self._maid
+	-- ADD TASK REMOVING
 end
 
 function Replica:Destroy()
@@ -936,7 +933,7 @@ function ReplicaService.NewReplica(replica_params) --> [Replica]
 		_write_lib = write_lib,
 
 		_signal_listeners = {},
-		_maid = MadworkMaid.NewMaid(),
+		_maid = MadworkMaid.new(),
 	}
 	setmetatable(replica, Replica)
 

@@ -359,7 +359,7 @@ local function DestroyReplicaAndDescendantsRecursive(replica, not_first_in_stack
 	-- Clear replica entry:
 	Replicas[id] = nil
 	-- Cleanup:
-	replica._maid:Cleanup()
+	replica._maid:DoCleaning()
 	-- Clear from children table of top parent replica:
 	if not_first_in_stack ~= true then
 		if replica.Parent ~= nil then
@@ -467,7 +467,7 @@ local function CreateReplicaBranch(replica_entries, created_replicas) --> create
 			_raw_listeners = {},
 
 			_signal_listeners = {},
-			_maid = MadworkMaid.NewMaid(),
+			_maid = MadworkMaid.new(),
 		}
 		setmetatable(replica, Replica)
 		-- Setting as child to parent:
@@ -855,11 +855,12 @@ function Replica:IsActive() --> is_active [bool]
 end
 
 function Replica:AddCleanupTask(task)
-	return self._maid:AddCleanupTask(task)
+	return self._maid:GiveTask(task)
 end
 
 function Replica:RemoveCleanupTask(task)
-	self._maid:RemoveCleanupTask(task)
+	-- local maid = self._maid
+	-- ADD TASK REMOVING
 end
 
 -- Write function setters: (Calling outside a write function will throw an error)

@@ -7,23 +7,32 @@ local Types = require(ServerScriptService.Server.Types)
 
 local PlayerProfiles = {}
 
-local PlayerProfile: Types.IPlayerProfile = {}
+local PlayerProfile = {}
 PlayerProfile.__index = PlayerProfile
 
 
 function PlayerProfile:Init()
-	self.Maid = Maid.NewMaid()
-	self.CharacterComponent = nil
+	self.Maid = Maid.new()
 
-	self.Maid:AddCleanupTask(self.Instance.CharacterAdded:Connect(function(character)
-		self.CharacterComponent = CharacterComponent.new(character)
-		self.CharacterComponent:Init(character)
+	self.Maid:GiveTask(self.Instance.CharacterAdded:Connect(function(character)
+		local component = CharacterComponent.new(character, self)
+		if not component then return end
+
+		self.CharacterComponent = component
+		PlayerProfiles[self.Instance] = self
+		component:Init()
 	end))
 
 	if self.Instance.Character and self.CharacterComponent == nil then
-		self.CharacterComponent = CharacterComponent.new(self.Instance.Character)
-		self.CharacterComponent:Init(self.Instance.Character)
+		local component = CharacterComponent.new(self.Instance.Character, self)
+		if not component then return end
+
+		self.CharacterComponent = component
+		PlayerProfiles[self.Instance] = self
+		component:Init()
 	end
+
+	print(self.CharacterComponent)
 end
 
 function PlayerProfile:GiveCash(cash_amount: number)

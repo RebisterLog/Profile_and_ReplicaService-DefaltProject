@@ -18,8 +18,8 @@ ReplicaController.ReplicaOfClassCreated("PlayerProfile", function(replica)
 	local player_name = is_local and "your" or replica.Tags.Player.Name .. "'s"
 	local replica_data = replica.Data
 
-	print("Received " .. player_name .. " player profile; Cash:", replica_data.Cash)
-	replica:ListenToChange({"Cash"}, function(new_value)
-		print(player_name .. " cash changed:", replica_data.Cash)
+	print("Received " .. player_name .. " player profile; Spawnpoints:", replica_data.Spawnpoints)
+	replica:ListenToChange({"Spawnpoints"}, function(new_value)
+		print(player_name .. " Spawnpoints changed:", replica_data.Spawnpoints)
 	end)
 end)
